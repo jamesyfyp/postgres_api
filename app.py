@@ -1,8 +1,12 @@
 from flask import Flask
-from sqlalchemy import create_engine
+from flask_sqlalchemy import SQLAlchemy
+from app.models import db
+from app.routes import user_s_routes, post_s_routes
 from urllib.parse import quote
 from dotenv import load_dotenv
 import os
+
+app = Flask(__name__)
 
 load_dotenv()
 
@@ -14,26 +18,11 @@ database = os.getenv('DB_NAME')
 
 encoded_password = quote(password, safe='')
 
-database_uri = f"postgresql://{username}:{encoded_password}@{host}:{port}/{database}"
-engine = create_engine(database_uri)
+app.config['SQLALCHEMY_DATABASE_URI'] = f"postgresql://{username}:{encoded_password}@{host}:{port}/{database}"
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# Test the connection
-try:
-    connection = engine.connect()
-    print("Connected successfully!")
-    connection.close()
-except Exception as e:
-    print(f"Error: {e}")
+db = SQLAlchemy(app)
 
-# Test the connection
-try:
-    connection = engine.connect()
-    print("Connected successfully!")
-    connection.close()
-except Exception as e:
-    print(f"Error: {e}")
-
-app = Flask(__name__)
 
 @app.route('/')
 def hello():
