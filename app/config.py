@@ -15,5 +15,3 @@ database = os.getenv('DB_NAME')
 encoded_password = quote(password, safe='')
 
 SQLALCHEMY_DATABASE_URI = f"postgresql://{username}:{encoded_password}@{host}:{port}/{database}"
-
-print(SQLALCHEMY_DATABASE_URI)
