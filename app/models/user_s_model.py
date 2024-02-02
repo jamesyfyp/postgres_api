@@ -2,8 +2,8 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
-class User_s(db.Model):
+class Users_s(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True, nullable=False)  
-    #posts = db.relationship('Post', backref='author', lazy=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user_s.id'), nullable=False)
 

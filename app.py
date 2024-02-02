@@ -7,6 +7,7 @@ app, db = create_app()
 
 app.register_blueprint(user_s_routes.user_bp)
 app.register_blueprint(post_s_routes.post_bp)
+
 @app.route('/')
 def hello():
     return 'Hello, World!'
