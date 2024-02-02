@@ -32,3 +32,22 @@ def create_user():
     db.session.commit()
 
     return jsonify({'message': 'User created successfully', 'user_id': new_user.id}), 201
+
+@user_bp.route('/users/get_by_name', methods=['POST'])
+def get_user_by_name():
+    data = request.get_json()
+    name = data.get('name')
+
+    # Validate input (add more validation as needed)
+    if not name:
+        return jsonify({'error': 'Missing username field'}), 400
+
+    # Query the user by name
+    user = Users_s.query.filter_by(name=name).first()
+
+    if not user:
+        return jsonify({'error': 'User not found'}), 404
+
+    # Return user details
+    user_details = {'id': user.id, 'name': user.name}
+    return jsonify( user_details)
