@@ -31,4 +31,11 @@ def create_post():
     db.session.add(new_post)
     db.session.commit()
 
-    return jsonify({'message': 'Post created successfully', 'post_id': new_post.id}), 201
+    return jsonify({'message': 'Post created successfully', 'post_id': new_post.id}), 200
+
+@post_bp.route('/users/<int:user_id>/posts', methods=["GET"])
+def get_posts_by_user(user_id):
+    user = Users_s.query.get_or_404(user_id)
+    posts = Post_s.query.filter_by(user_id=user_id).all()
+    posts_list = [{'id': post.id, 'title': post.title, 'content': post.content} for post in posts]
+    return jsonify(posts_list)
