@@ -7,9 +7,10 @@ user_bp = Blueprint('user_bp', __name__)
 @user_bp.route('/users', methods=['GET'])
 def get_all_users():
     users = Users_s.query.all()
+    print(users)
     user_list = []
     for user in users:
-        user_list.append({'id': user.id, 'username': user.username, 'email': user.email})
+        user_list.append({'id': user.id, 'name': user.name})
     return jsonify({'users': user_list})
 
 @user_bp.route('/users', methods=['POST'])
