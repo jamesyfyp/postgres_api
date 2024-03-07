@@ -52,9 +52,3 @@ def get_user_by_name():
     # Return user details
     user_details = {'id': user.id, 'name': user.name}
     return jsonify( user_details)
-
-@user_bp.route('/users/all', methods=["GET"])
-def get_users_all(): 
-    users_with_posts = Users_s.query.filter(Users_s.posts.any()).all()
-    user_list = [{'id': user.id, 'name': user.name} for user in users_with_posts]
-    return jsonify(user_list)

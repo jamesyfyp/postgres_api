@@ -2,6 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from app.config import SQLALCHEMY_DATABASE_URI
 
+
 db = SQLAlchemy()
 
 def create_app():
@@ -12,8 +13,9 @@ def create_app():
     db.init_app(app)  # Initialize the db object with the app
 
     # Register your blueprints or import your routes here
-    from app.routes import user_s_routes, post_s_routes
+    from app.routes import user_s_routes, post_s_routes, chunk_s_routes
     app.register_blueprint(user_s_routes.user_bp)
     app.register_blueprint(post_s_routes.post_bp)
+    app.register_blueprint(chunk_s_routes.chunk_bp)
 
     return app, db
