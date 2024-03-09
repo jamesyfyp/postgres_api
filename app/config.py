@@ -15,3 +15,4 @@ database = os.getenv('DB_NAME')
 encoded_password = quote(password, safe='')
 
 SQLALCHEMY_DATABASE_URI = f"postgresql://{username}:{encoded_password}@{host}:{port}/{database}"
+EMBEDDING_API_URL = os.getenv('EMBEDDING_API_URL')

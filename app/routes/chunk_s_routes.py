@@ -3,6 +3,9 @@ from app.models.chunk_s_model import Chunk_s
 from pgvector.sqlalchemy import Vector
 from sqlalchemy import select
 from factory import db
+import requests
+
+from app.config import EMBEDDING_API_URL
 
 chunk_bp = Blueprint('chunk_bp', __name__)
 
@@ -41,13 +44,25 @@ def get_unique_posts_for_user(user_id):
 @chunk_bp.route('/chunk/nearest_neighbors', methods=['POST'])
 def get_nearest_neighbors():
      # Get the embedded prompt from the request JSON
-    embedded_prompt = request.json.get('embedded_prompt')
+    text = request.json.get('text')
     user_id = request.json.get('user_id')
     limit = request.json.get('limit')
-
-    if not embedded_prompt or not user_id:
+    max_tokens = request.json.get('max_tokens')
+ 
+    if not text or not user_id:
         return jsonify({'error': 'Missing required fields'}), 400
-   
+    
+    embedding_data = {
+        "max_tokens": max_tokens,
+        "text": text
+    }
+
+    
+    #response = requests.post("http://localhost:6000/prompt_embedding", json=embedding_data)
+    print(EMBEDDING_API_URL)
+    response = requests.post(f"{EMBEDDING_API_URL}/prompt_embedding", json=embedding_data)
+    embedded_prompt = response.json().get('embedding')
+
     query = db.session.scalars(select(Chunk_s).filter(Chunk_s.user_id == user_id).order_by(Chunk_s.vector.l2_distance(embedded_prompt)).limit(limit))
     result = query.all()
     results = list(result)
@@ -59,7 +74,6 @@ def get_nearest_neighbors():
             'post_id': row.post_id,
             'chunk_number': row.chunk_number,
             'text_chunk': row.text_chunk,
-            # Add other attributes as needed
         }
         chunks_list.append(chunk_dict)
     return jsonify({"chunks": chunks_list}), 200
